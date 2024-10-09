@@ -4,15 +4,15 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { SequelizeConnection } from './services/sequelize';
 import presentationRoutes from './routes/presentationRoutes';
-
+import authRoutes from "./routes/authRoutes" 
 const port = 3000;
 const app: Application = express();
 app.use(cors());
 app.use(bodyParser.json());
 SequelizeConnection.getInstance(); 
 
-app.use('/', presentationRoutes);
-
+app.use('/api', presentationRoutes);
+app.use('/api', authRoutes);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}...`); 
 });
