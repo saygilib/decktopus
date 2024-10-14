@@ -6,6 +6,7 @@ export default class Presentations extends Model {
   declare presentationName: string;
   declare createdBy: ForeignKey<Users["id"]>;
   declare user: NonAttribute<Users>;
+  declare thumbnail: string;
 }
 const sequelizeConnection = SequelizeConnection.getInstance();
 
@@ -29,6 +30,10 @@ Presentations.init(
         model: "Users",
         key: "id",
       },
+    },
+    thumbnail: {
+      field: "thumbnail",
+      type: DataTypes.STRING,
     },
   },
   {

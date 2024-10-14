@@ -6,12 +6,10 @@ import jwt from "jsonwebtoken";
 export const signup = async (req: Request, res: Response) => {
   const { username, password, email } = req.body;
 
-  // Validate input
   if (!username || !password || !email) {
     return res.status(400).json({ message: "missing information" });
   }
 
-  // Check if user already exists
   await Users.findOne({
     where: {
       email: email,
@@ -47,28 +45,25 @@ export const signup = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
-  // Validate input
   if (!username || !password) {
     return res
       .status(400)
       .json({ message: "Username and password are required" });
   }
 
-  // Find user
+ 
   const user = await Users.findOne({ where: { username } });
   if (!user) {
     return res.status(401).json({ message: "Invalid username or password" });
   }
 
-  // Check password
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
     return res.status(401).json({ message: "Invalid username or password" });
   }
 
-  // Create JWT
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
     expiresIn: "1h",
   });
-  res.status(200).json({ message: "Login successful", token });
+  res.status(200).json({ message: "Login successful", token , user});
 };

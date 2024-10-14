@@ -52,6 +52,10 @@ module.exports = {
           key: "id",
         },
       },
+      thumbnail: {
+        field: "thumbnail",
+        type: Sequelize.STRING,
+      },
 
       createdAt: {
         allowNull: false,
@@ -65,6 +69,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropAllTables()
+    await queryInterface.dropAllTables();
   },
 };
