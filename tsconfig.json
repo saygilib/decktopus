@@ -7,6 +7,11 @@
     "outDir": "dist",
     "rootDir": "./",
     "strict": true,
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    "types": ["jest", "node", "supertest"],
+  },
+  "include": [
+    "src/**/*.ts", // Ensure Jest looks at your TypeScript source files
+    "__tests__/**/*.test.ts"  // Include your test files
+  ]
 }

@@ -67,7 +67,7 @@ export const login = async (req: Request, res: Response) => {
   const user = await Users.findOne({ where: { username } });
   if (!user) {
     return res.status(401).json({ message: "Invalid username or password" ,isSucces: false });
-  }
+  } 
   //check if password matches the encrypted password
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
@@ -75,8 +75,8 @@ export const login = async (req: Request, res: Response) => {
   }
   //creating token for auth
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
-    expiresIn: "1h",
+    expiresIn: "24h",
   });
   //return user info with token
-  res.status(200).json({ message: "Login successful", token, user  , isSucces: true});
+  res.status(200).json({ message: "Login successful", token, user  , isSucces: true , id:user.id});
 };

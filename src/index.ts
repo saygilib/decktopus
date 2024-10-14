@@ -17,7 +17,8 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api', presentationRoutes);
 app.use('/api', authRoutes);
 
-app.listen(port, () => {
+/* app.listen(port, () => {
   console.log(`Server is running on port ${port}...`); 
-});
+}); */
 
+export default app

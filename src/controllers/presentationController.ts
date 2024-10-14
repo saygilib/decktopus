@@ -5,24 +5,23 @@ import path from "path";
 
 // this function returns all presentations for dashboard page
 export const getAllPresentations = async (req: Request, res: Response) => {
-
   try {
     // in here i include user to search because i need username info for displaying createdBy section in dashboard
     const allPresentations = await Presentations.findAll({
       include: ["user"],
     });
+    
     //null check
-    if (allPresentations)
-      res
+    if (allPresentations )
+      return res
         .status(200)
         .send({ presentations: allPresentations, isSuccess: true });
+  
     else
-      return res
-        .status(400)
-        .json({
-          message: "Failed to retrieve presentations.",
-          isSuccess: false,
-        });
+      return res.status(400).json({
+        message: "Failed to retrieve presentations.",
+        isSuccess: false,
+      });
   } catch (error) {
     res.status(500).send({
       message: "Error retrieving presentations",
@@ -33,10 +32,10 @@ export const getAllPresentations = async (req: Request, res: Response) => {
 };
 
 export const createNewPresentation = async (req: Request, res: Response) => {
-  // for creating a new presentation user needs to provide presentation name , created by (username) and thumbnail image (file) 
+  // for creating a new presentation user needs to provide presentation name , created by (username) and thumbnail image (file)
   try {
     const { presentationName, createdBy } = req.body;
-    // if any info is missing return error 
+    // if any info is missing return error
     if (!presentationName || !createdBy) {
       return res
         .status(400)
@@ -48,7 +47,7 @@ export const createNewPresentation = async (req: Request, res: Response) => {
         .status(400)
         .json({ message: "Thumbnail image is required.", isSuccess: false });
     }
-    // i stored the thumbnail in a folder called uploads , however in larger projects this shouldn't be done. 
+    // i stored the thumbnail in a folder called uploads , however in larger projects this shouldn't be done.
     const newPresentation = await Presentations.create({
       presentationName,
       createdBy: createdBy,
@@ -70,7 +69,7 @@ export const createNewPresentation = async (req: Request, res: Response) => {
   }
 };
 
-// presentation delete function 
+// presentation delete function
 export const deletePresentation = async (req: Request, res: Response) => {
   try {
     const { id } = req.params; // presentation id for searching in db
@@ -88,23 +87,19 @@ export const deletePresentation = async (req: Request, res: Response) => {
       if (err) {
         console.log("ERROR:", err); // in case of any error , error log
 
-        return res
-          .status(500)
-          .json({
-            message: "Error deleting file",
-            error: err,
-            isSuccess: false,
-          });
+        return res.status(500).json({
+          message: "Error deleting file",
+          error: err,
+          isSuccess: false,
+        });
       }
 
       await presentation.destroy(); // deleting presentation from db
 
-      return res
-        .status(200)
-        .json({
-          message: "Presentation and file deleted successfully.",
-          isSuccess: true,
-        });
+      return res.status(200).json({
+        message: "Presentation and file deleted successfully.",
+        isSuccess: true,
+      });
     });
   } catch (error) {
     res.status(500).json({
@@ -119,12 +114,13 @@ export const deletePresentation = async (req: Request, res: Response) => {
 export const updatePresentationName = async (req: Request, res: Response) => {
   // a user can only edit their own presentations. if they try to alter another users presentation it throws an error
   try {
-    //necessarry parameters and body 
+    //necessarry parameters and body
     const { id } = req.params;
     const { newName, createdBy } = req.body;
     //find presentation by id
     const presentation = await Presentations.findByPk(id);
-    if (!presentation) { // null check
+    if (!presentation) {
+      // null check
       return res
         .status(404)
         .json({ message: "Presentation not found", isSuccess: false });
