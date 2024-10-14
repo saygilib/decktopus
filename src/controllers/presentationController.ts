@@ -3,11 +3,15 @@ import Presentations from "../models/presentations";
 import fs from "fs";
 import path from "path";
 
+// this function returns all presentations for dashboard page
 export const getAllPresentations = async (req: Request, res: Response) => {
+
   try {
+    // in here i include user to search because i need username info for displaying createdBy section in dashboard
     const allPresentations = await Presentations.findAll({
       include: ["user"],
     });
+    //null check
     if (allPresentations)
       res
         .status(200)
@@ -29,9 +33,10 @@ export const getAllPresentations = async (req: Request, res: Response) => {
 };
 
 export const createNewPresentation = async (req: Request, res: Response) => {
+  // for creating a new presentation user needs to provide presentation name , created by (username) and thumbnail image (file) 
   try {
     const { presentationName, createdBy } = req.body;
-
+    // if any info is missing return error 
     if (!presentationName || !createdBy) {
       return res
         .status(400)
@@ -43,7 +48,7 @@ export const createNewPresentation = async (req: Request, res: Response) => {
         .status(400)
         .json({ message: "Thumbnail image is required.", isSuccess: false });
     }
-
+    // i stored the thumbnail in a folder called uploads , however in larger projects this shouldn't be done. 
     const newPresentation = await Presentations.create({
       presentationName,
       createdBy: createdBy,
@@ -65,9 +70,10 @@ export const createNewPresentation = async (req: Request, res: Response) => {
   }
 };
 
+// presentation delete function 
 export const deletePresentation = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // presentation id for searching in db
 
     const presentation = await Presentations.findByPk(id);
     if (!presentation) {
@@ -75,12 +81,12 @@ export const deletePresentation = async (req: Request, res: Response) => {
         .status(404)
         .json({ message: "Presentation not found", isSuccess: false });
     }
-
-    const filePath = path.join(__dirname, "..", "..", presentation.thumbnail);
-    console.log("Deleting file from path:", filePath);
+    // if user removes a presentations i also delete it from the uploads folder
+    const filePath = path.join(__dirname, "..", "..", presentation.thumbnail); // this is the path for uploads folder , /uploads/image
+    console.log("Deleting file from path:", filePath); // log for filepath , checking if i got the correct path
     fs.unlink(filePath, async (err) => {
       if (err) {
-        console.log("ERROR:", err);
+        console.log("ERROR:", err); // in case of any error , error log
 
         return res
           .status(500)
@@ -91,7 +97,7 @@ export const deletePresentation = async (req: Request, res: Response) => {
           });
       }
 
-      await presentation.destroy();
+      await presentation.destroy(); // deleting presentation from db
 
       return res
         .status(200)
@@ -109,19 +115,23 @@ export const deletePresentation = async (req: Request, res: Response) => {
   }
 };
 
+// function for editing presentation name
 export const updatePresentationName = async (req: Request, res: Response) => {
+  // a user can only edit their own presentations. if they try to alter another users presentation it throws an error
   try {
+    //necessarry parameters and body 
     const { id } = req.params;
     const { newName, createdBy } = req.body;
-
+    //find presentation by id
     const presentation = await Presentations.findByPk(id);
-    if (!presentation) {
+    if (!presentation) { // null check
       return res
         .status(404)
         .json({ message: "Presentation not found", isSuccess: false });
     }
+    // check if user is the one who created the presentation
     if (presentation.createdBy === createdBy) {
-      presentation.presentationName = newName;
+      presentation.presentationName = newName; // save new name
       await presentation.save();
 
       res.status(200).json({

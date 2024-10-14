@@ -1,5 +1,6 @@
 import { Dialect, Sequelize } from "sequelize";
 
+//db configuration
 export class SequelizeConnection {
     private static instance: Sequelize;
 

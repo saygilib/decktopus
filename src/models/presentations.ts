@@ -10,6 +10,8 @@ export default class Presentations extends Model {
 }
 const sequelizeConnection = SequelizeConnection.getInstance();
 
+ // i added a foreign key here because each presentation should belong to a user  and a  user can have many presentations
+ 
 Presentations.init(
   {
     id: {
@@ -42,7 +44,6 @@ Presentations.init(
     modelName: "Presentations",
   }
 );
-
 Presentations.belongsTo(Users, {
   foreignKey: "createdBy",
   as: "user",

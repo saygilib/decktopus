@@ -1,7 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 
-// Set storage engine
+// multer is a library for storing files
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -15,9 +15,9 @@ const storage = multer.diskStorage({
 
 const multerConfig = multer({
   storage: storage,
-  limits: { fileSize: 1000000 }, // 1MB limit
+  limits: { fileSize: 1000000 }, // i limited size to 1 mb , but it can be changed
   fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png/;
+    const fileTypes = /jpeg|jpg|png/; // supported formats
     const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = fileTypes.test(file.mimetype);
 

@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import Users from "../models/users";
 
+
+// this is authentication middleware for protecting my routes.
+//only signup and login routes are not protected
+//when a request comes to any other route , this function checks the token provided from front-end
 export const authenticateToken = async (
   req: Request | any,
   res: Response,

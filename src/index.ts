@@ -11,9 +11,12 @@ const app: Application = express();
 app.use(cors());
 app.use(bodyParser.json());
 SequelizeConnection.getInstance(); 
+
+//necessary routes 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api', presentationRoutes);
 app.use('/api', authRoutes);
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}...`); 
 });
